@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "flask-babel"
-version = "4.0.0"
+name = "flask-babel-hyper"
+version = "5.0.0"
 description = "Adds i18n/l10n support for Flask applications."
 authors = ["Armin Ronacher"]
 maintainers = ["Tyler Kennedy <tk@tkte.ch>"]
 license = "BSD-3-Clause"
 readme = "README.md"
-repository = "https://github.com/python-babel/flask-babel"
+repository = "https://github.com/hyperflask/flask-babel-hyper"
 documentation = "https://python-babel.github.io/flask-babel/"
 classifiers = [
     'Development Status :: 5 - Production/Stable',
@@ -23,6 +23,7 @@ classifiers = [
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     'Topic :: Software Development :: Libraries :: Python Modules'
 ]
+packages = [{include = "flask_babel"}]
 include = [
     { path = "CHANGELOG", format = "sdist" },
     { path = "README.md", format = "sdist" },
