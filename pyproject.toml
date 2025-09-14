@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flask-babel-hyper"
-version = "5.0.0"
+version = "5.1.0"
 description = "Adds i18n/l10n support for Flask applications."
 authors = ["Armin Ronacher"]
 maintainers = ["Tyler Kennedy <tk@tkte.ch>"]

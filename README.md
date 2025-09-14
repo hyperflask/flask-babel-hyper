@@ -1,16 +1,8 @@
-# Flask Babel
+# Flask-Babel-Hyper
 
-![Tests](https://github.com/python-babel/flask-babel/workflows/Tests/badge.svg?branch=master)
-[![PyPI](https://img.shields.io/pypi/v/flask-babel.svg?maxAge=2592000)](https://pypi.python.org/pypi/Flask-Babel)
+This is a fork of [Flask-Babel](https://github.com/python-babel/flask-babel) with added features:
 
-Implements i18n and l10n support for Flask. This is based on the Python
-[babel][] and [pytz][] modules.
-
-## Documentation
-
-The latest documentation is available [here][docs].
-
-[babel]: https://github.com/python-babel/babel
-[pytz]: https://pypi.python.org/pypi/pytz/
-[docs]: https://python-babel.github.io/flask-babel/
-[semver]: https://semver.org/
+ - Default locale selection mechanism
+ - Auto creation of mapping file and one command extraction
+ - CLI utilities to manage translations
+ - Compilation to JS files for use on the frontend

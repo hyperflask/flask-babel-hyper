@@ -36,7 +36,6 @@ class BabelConfiguration:
     default_directories: List[str]
     translation_directories: List[str]
     enabled_locales: Sequence[str]
-    store_locale_in_session: bool
     extract_locale_from_headers: bool
 
     instance: "Babel"
@@ -103,7 +102,6 @@ class Babel:
         default_translation_directories="translations",
         enabled_locales=None,
         extract_locale_from_request=None,
-        store_locale_in_session=True,
         extract_locale_from_headers=True,
         default_timezone="UTC",
         locale_selector=None,
@@ -142,7 +140,6 @@ class Babel:
             default_directories=directories,
             translation_directories=list(self._resolve_directories(directories, app)),
             enabled_locales=app.config.get("BABEL_ENABLED_LOCALES", enabled_locales),
-            store_locale_in_session=app.config.get("BABEL_STORE_LOCALE_IN_SESSION", store_locale_in_session),
             extract_locale_from_headers=app.config.get("BABEL_EXTRACT_LOCALE_FROM_HEADERS", extract_locale_from_headers),
             extract_locale_from_request=app.config.get("BABEL_EXTRACT_LOCALE_FROM_REQUEST", extract_locale_from_request),
             instance=self,
@@ -259,28 +256,21 @@ class Babel:
 
 def select_locale():
     babel = get_babel()
-    enabled_locales = [get_locale_identifier(l.language, l.territory) for l in babel.enabled_locales]
+    enabled_locales = [get_locale_identifier((l.language, l.territory)) for l in babel.enabled_locales]
+    if not enabled_locales:
+        return
 
-    if has_request_context() and babel.store_locale_in_session and "locale" in session:
-        return session["locale"]
-    
-    if has_request_context() and babel.extract_locale_from_request and enabled_locales:
-        if babel.extract_locale_from_request in request.args:
-            locale = request.args[babel.extract_locale_from_request]
-            if locale not in enabled_locales:
-                return
-            if babel.store_locale_in_session:
-                session["locale"] = locale
+    if has_request_context() and babel.extract_locale_from_request:
+        locale = request.args.get(babel.extract_locale_from_request)
+        if locale in enabled_locales:
+            session["locale"] = locale
             return locale
+        elif locale is None and "locale" in session:
+            return session["locale"]
+        elif locale == "":
+            session.pop("locale", None)
         
-    if babel.locale_selector:
-        locale = babel.locale_selector()
-        if locale:
-            if babel.store_locale_in_session:
-                session["locale"] = locale
-            return locale
-        
-    if not has_request_context() and babel.extract_locale_from_headers and enabled_locales:
+    if has_request_context() and babel.extract_locale_from_headers:
         return request.accept_languages.best_match(enabled_locales)
 
 
@@ -822,6 +812,9 @@ _np = npgettext
 
 def lazy_gettext(*args, **kwargs) -> LazyString:
     return LazyString(gettext, *args, **kwargs)
+
+
+_lazy = lazy_gettext
 
 
 def lazy_pgettext(*args, **kwargs) -> LazyString:
